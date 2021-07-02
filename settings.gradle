@@ -1,0 +1,2 @@
+rootProject.name = "Deloitte-Flickr-search"
+include ':app'
