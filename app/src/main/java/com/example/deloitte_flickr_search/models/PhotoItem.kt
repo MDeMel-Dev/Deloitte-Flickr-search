@@ -1,4 +1,4 @@
-package com.example.deloitte_flickr_search.data
+package com.example.deloitte_flickr_search.models
 
 data class PhotoItem (
 

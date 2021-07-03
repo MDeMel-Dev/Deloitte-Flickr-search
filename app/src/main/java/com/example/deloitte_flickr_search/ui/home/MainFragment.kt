@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -14,27 +15,24 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deloitte_flickr_search.MainViewModel
 import com.example.deloitte_flickr_search.R
-import com.example.deloitte_flickr_search.data.PhotoItem
+import com.example.deloitte_flickr_search.models.PhotoItem
 import com.example.deloitte_flickr_search.databinding.FragmentHomeBinding
 import com.example.deloitte_flickr_search.ui.home.recyclerview.FlickrAdapter
-import com.example.deloitte_flickr_search.ui.util.Swiper
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
 
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
     private lateinit var nestedScrollView : NestedScrollView
-
     private lateinit var flickrRecyclerView: RecyclerView
-
-    val adapter = FlickrAdapter()
+    private val adapter = FlickrAdapter()
 
 
     override fun onCreateView(
@@ -45,9 +43,9 @@ class MainFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        mainViewModel =
-            ViewModelProvider(this.requireActivity(), com.example.deloitte_flickr_search.MainViewModel.Factory(requireActivity()!!.application))
-                .get(MainViewModel::class.java)
+//        mainViewModel =
+////            ViewModelProvider(this.requireActivity(), com.example.deloitte_flickr_search.MainViewModel.Factory(requireActivity()!!.application))
+////                .get(MainViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -55,13 +53,12 @@ class MainFragment : Fragment() {
 
 
         nestedScrollView = binding.recyclerNest
-
-
         // RecyclerView setup
         flickrRecyclerView = binding.recycler
         flickrRecyclerView.layoutManager = GridLayoutManager(context, 3)
         flickrRecyclerView.adapter = adapter
 
+        //RECYCLERVIEW ADAPTER DATA PASS ON START OR ON SEARCH
         mainViewModel.flickrLiveData.observe(viewLifecycleOwner, Observer {
            if(!(it == null)) {
                adapter.photoList = it as ArrayList<PhotoItem>
@@ -69,6 +66,7 @@ class MainFragment : Fragment() {
            }
         })
 
+        //RECYCLERVIEW ADAPTER DATA PASS ON PAGINATION
         mainViewModel.paginateLiveData.observe(viewLifecycleOwner, Observer {
             if(!(it == null)) {
                 adapter.photoList.addAll(it as ArrayList<PhotoItem>)
@@ -77,6 +75,7 @@ class MainFragment : Fragment() {
             }
         })
 
+        //LISTENER FOR PAGINATION
         doPaging()
 
 
@@ -97,12 +96,13 @@ class MainFragment : Fragment() {
         })
     }
 
+    //NAVIGATE TO INFO FRAGMENT
     fun navigateInfo()
     {
         NavHostFragment.findNavController(this).navigate(R.id.action_navigation_home_to_navigation_info)
     }
 
-
+    //SEARCHVIEW SETUP AND INTEGRATION
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
     {
         super.onCreateOptionsMenu(menu, inflater)
@@ -126,6 +126,7 @@ class MainFragment : Fragment() {
             }) }
     }
 
+    //ACTION BAR HOME ITEM ONCLICK
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_info -> {

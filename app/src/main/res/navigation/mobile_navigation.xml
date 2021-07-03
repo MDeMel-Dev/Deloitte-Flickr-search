@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/navigation_info"
-        android:name="com.example.deloitte_flickr_search.ui.notifications.InfoFragment"
+        android:name="com.example.deloitte_flickr_search.ui.info.InfoFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_info">
         <action

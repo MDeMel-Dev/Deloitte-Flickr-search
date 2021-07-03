@@ -7,10 +7,11 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.deloitte_flickr_search.R
-import com.example.deloitte_flickr_search.data.PhotoItem
+import com.example.deloitte_flickr_search.models.PhotoItem
 
 class FlickrAdapter : RecyclerView.Adapter<FlickrAdapter.MyViewHolder>() {
 
+    //MAIN DATA HOLDER
     var photoList = ArrayList<PhotoItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlickrAdapter.MyViewHolder {

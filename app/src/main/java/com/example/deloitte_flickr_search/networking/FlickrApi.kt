@@ -1,9 +1,7 @@
 package com.example.deloitte_flickr_search.networking
 
 
-import com.example.deloitte_flickr_search.data.PhotoItem
 import io.reactivex.Observable
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 

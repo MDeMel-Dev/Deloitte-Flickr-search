@@ -1,14 +1,12 @@
-package com.example.deloitte_flickr_search.ui.notifications
+package com.example.deloitte_flickr_search.ui.info
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.example.deloitte_flickr_search.R
 import com.example.deloitte_flickr_search.databinding.FragmentInfoBinding
-import com.example.deloitte_flickr_search.ui.util.Swiper
 
 class InfoFragment : Fragment() {
 
@@ -31,6 +29,7 @@ class InfoFragment : Fragment() {
         _binding = FragmentInfoBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        //PROFILE-LINK ACTION ON CLICK
         val profileLink = binding.profileLink
         profileLink.movementMethod = LinkMovementMethod.getInstance()
 
@@ -38,6 +37,7 @@ class InfoFragment : Fragment() {
         return root
     }
 
+    //NAVIGATE TO HOME FRAGMENT
     fun navigateHome()
     {
         NavHostFragment.findNavController(this).navigate(R.id.action_navigation_info_to_navigation_home)
@@ -48,6 +48,7 @@ class InfoFragment : Fragment() {
         inflater.inflate(R.menu.info_menu, menu)
     }
 
+    //ACTION BAR ITEM HOME ONCLICK
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_home -> {

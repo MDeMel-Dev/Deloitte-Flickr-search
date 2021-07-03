@@ -1,9 +1,10 @@
-package com.example.deloitte_flickr_search.data
+package com.example.deloitte_flickr_search.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.example.deloitte_flickr_search.networking.FlickrApi
 import com.example.deloitte_flickr_search.networking.MainResponse
 import com.example.deloitte_flickr_search.networking.util.Constants.Companion.BASE_URL
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -11,71 +12,13 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
 
-class PhotoRepository {
+class PhotoRepository(flickrApi: FlickrApi) {
 
-    private val flickrApi: FlickrApi
-
-    init {
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-//            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
-
-        flickrApi = retrofit.create(FlickrApi::class.java)
-    }
-
-//    fun fetchData(): LiveData<List<PhotoItem>> {
-//
-//        val responseLiveData: MutableLiveData<List<PhotoItem>> = MutableLiveData()
-//        val flickrRequest: Call<MainResponse> = flickrApi.fetchData()
-//
-//        flickrRequest.enqueue(object : Callback<MainResponse> {
-//
-////            override fun onResponse( call: Call<String>,
-////                                     response: Response<String>
-////            )
-////            {
-////
-////                response.body()?.let { Log.d("mane", it) }
-////                 }
-////
-////
-////            override fun onFailure(call: Call<String>, t: Throwable)
-////            {
-////                Log.e("mane", "Failed to fetch photos", t)
-////            }
-////
-////        })
-//
-//            override fun onResponse( call: Call<MainResponse>,
-//                                     response: Response<MainResponse>
-//            )
-//            {
-//
-//                Log.d("mane", "Response received")
-//                // ADD A PROCESS JSON FUNC HERE
-//                val mainResponse: MainResponse? = response.body()
-//                val processedResponse = mainResponse?.photos
-//                val photoItems: List<PhotoItem> = processedResponse?.photoItems ?: mutableListOf()
-//                responseLiveData.value = photoItems
-//                Log.d("mane", photoItems.toString())
-//            }
-//
-//
-//            override fun onFailure(call: Call<MainResponse>, t: Throwable)
-//            {
-//                Log.e("mane", "Failed to fetch photos", t)
-//            }
-//
-//        })
-//
-//        return responseLiveData
-//    }
-
+    val flickrApi = flickrApi
+    //ONSTART OR ON SEARCH
     lateinit var photoData: MutableLiveData<MainResponse>
     init {
         photoData = MutableLiveData()
@@ -85,7 +28,19 @@ class PhotoRepository {
         return photoData
     }
 
-    // make api call
+    //ON PAGINATION
+    lateinit var paginateData: MutableLiveData<MainResponse>
+    init {
+        paginateData = MutableLiveData()
+    }
+
+    fun paginateObserver(): MutableLiveData<MainResponse> {
+        return paginateData
+    }
+
+
+
+    // MAKE API CALL ON START OR ON SEARCH
     fun searchFlickrApi(query: String) {
 
         flickrApi.getPhotos(query)
@@ -94,6 +49,7 @@ class PhotoRepository {
             .subscribe(getPhotoListObserverRx())
     }
 
+    // OBSERVE API CALL
     private fun getPhotoListObserverRx():Observer<MainResponse> {
         return object : Observer<MainResponse> {
             override fun onComplete() {
@@ -114,15 +70,7 @@ class PhotoRepository {
         }
     }
 
-    lateinit var paginateData: MutableLiveData<MainResponse>
-    init {
-        paginateData = MutableLiveData()
-    }
-
-    fun paginateObserver(): MutableLiveData<MainResponse> {
-        return paginateData
-    }
-
+    // MAKE API CALL ON PAGINATION
     fun paginateFlickrApi(query: String , page: String) {
 
         flickrApi.getPage(query, page)
@@ -131,6 +79,7 @@ class PhotoRepository {
             .subscribe(paginateObserverRx())
     }
 
+    //OBSERVE PAGINATION API CALL
     private fun paginateObserverRx():Observer<MainResponse> {
         return object : Observer<MainResponse> {
             override fun onComplete() {
