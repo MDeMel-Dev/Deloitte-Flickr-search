@@ -15,11 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor( @ApplicationContext private val application: Context , private val mainRepo: PhotoRepository) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
-
     //START LOAD DATA VALUES
     private val _flickrLiveData = MutableLiveData<List<PhotoItem>>().apply {
         value = null
@@ -75,16 +70,6 @@ class MainViewModel @Inject constructor( @ApplicationContext private val applica
         mainRepo.paginateFlickrApi(input, pageNo.toString())
     }
 
-    //FACTORY METHOD
-//    class Factory(val app: Application) : ViewModelProvider.Factory {
-//        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-//            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-//                @Suppress("UNCHECKED_CAST")
-//                return MainViewModel(app) as T
-//            }
-//            throw IllegalArgumentException("Unable to construct viewmodel")
-//        }
-//    }
 
     //REMOVES RXJAVA OBSERVER
     override fun onCleared() {

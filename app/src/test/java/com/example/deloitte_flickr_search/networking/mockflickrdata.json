@@ -1,0 +1,33 @@
+{
+    "photos": {
+        "page": 2,
+        "pages": 1320,
+        "perpage": 100,
+        "total": 131920,
+        "photo": [
+            {
+                "id": "51185195873",
+                "owner": "24688219@N07",
+                "secret": "c42ef7dc6d",
+                "server": "65535",
+                "farm": 66,
+                "title": "Mustangs from the past",
+                "ispublic": 1,
+                "isfriend": 0,
+                "isfamily": 0
+            },
+            {
+                "id": "51186050620",
+                "owner": "24688219@N07",
+                "secret": "d6ee675152",
+                "server": "65535",
+                "farm": 66,
+                "title": "Mustangs from the past",
+                "ispublic": 1,
+                "isfriend": 0,
+                "isfamily": 0
+            }
+]
+    },
+    "stat": "ok"
+}
