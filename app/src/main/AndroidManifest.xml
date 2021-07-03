@@ -9,9 +9,9 @@
         android:name=".ManeApplication"
         android:allowBackup="true"
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/dfs_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/dfs"
         android:supportsRtl="true"
         android:theme="@style/Theme.DeloitteFlickrsearch">
         <activity

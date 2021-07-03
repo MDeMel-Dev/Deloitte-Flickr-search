@@ -6,7 +6,6 @@ import org.junit.Test
 class MainResponseTest{
 
     @Test
-    @SuppressWarnings("--illegal-access")
     fun mockRetrofitTest() {
         // This test is to ensure that Retrofit can successfully intercept API requests and return local Mock data
         val retrofit = MockRetrofit()
