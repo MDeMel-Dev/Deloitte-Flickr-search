@@ -1,5 +1,5 @@
 #  Deloitte-Flicker-search 
-![screenshot](./app/src/main/res/drawable/dfs.png)  
+![screenshot](./app/src/main/res/drawable/dfs_icon.xml)  
 
 Skill Showcase App
 
