@@ -1,7 +1,7 @@
 #  Deloitte-Flicker-search 
-![screenshot](./app/src/main/res/drawable/utuwap.png)  
+![screenshot](./app/src/main/res/drawable/dfs.png)  
 
-UTU Weather App
+Skill Showcase App
 
 ![](https://img.shields.io/badge/Code-Kotlin%2FJava-brightgreen)
 
