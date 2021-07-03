@@ -1,5 +1,6 @@
-<center> #  Deloitte-Flicker-search  </center>
+#  Deloitte-Flicker-search 
 ![screenshot](./app/src/main/res/drawable/utuwap.png)  
+
 UTU Weather App
 
 ![](https://img.shields.io/badge/Code-Kotlin%2FJava-brightgreen)
