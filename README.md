@@ -14,8 +14,8 @@ Location based weather details + Weather details for { Sydney , Hobart , Perth }
 ## Built With
 
 - Android
-- Kotlin / Java
-- Rest-Api
+- Kotlin 
+- Flickr Rest-Api
 
 ## Features
 
