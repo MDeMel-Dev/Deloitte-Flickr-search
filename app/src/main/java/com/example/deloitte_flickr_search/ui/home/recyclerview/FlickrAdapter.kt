@@ -31,13 +31,14 @@ class FlickrAdapter : RecyclerView.Adapter<FlickrAdapter.MyViewHolder>() {
 
     class   MyViewHolder(photoview: View): RecyclerView.ViewHolder(photoview) {
 
-        val thumbImageView = photoview.rootView as ImageView
+        val thumbImageView: ImageView = photoview.findViewById(R.id.glide_view)
 
-        fun bind(data : PhotoItem){
-
+        fun bind(data : PhotoItem)
+        {
             val url  = "http://farm${data.farm}.static.flickr.com/${data.server}/${data.id}_${data.secret}.jpg"
             Glide.with(thumbImageView)
                 .load(url)
+                .placeholder(R.drawable.spinner)
                 .into(thumbImageView)
         }
     }

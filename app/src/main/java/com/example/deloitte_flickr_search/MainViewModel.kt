@@ -23,26 +23,51 @@ class MainViewModel(application: Application) : ViewModel() {
     }
     val flickrLiveData: LiveData<List<PhotoItem>> = _flickrLiveData
 
+    //PAGINATION VALUES
+
+    private val _paginateLiveData = MutableLiveData<List<PhotoItem>>().apply {
+        value = null
+    }
+    val paginateLiveData: LiveData<List<PhotoItem>> = _paginateLiveData
+
+    var nextPage = 2
+
+    var currentText = "trees"
+
     init {
 
-            loadAPIData("fireworks" , application )
+            loadAPIData("trees" , application )
 
     }
 
     fun loadAPIData(input: String , context: Context) {
-//        viewModel =  ViewModelProvider(this.requireActivity(), com.example.kiddster.MainViewModel.Factory(requireActivity()!!.application))
-//            .get(MainViewModel::class.java)
-        mainRepo.getBookListObserver().observeForever(Observer<MainResponse>{
+
+        mainRepo.getPhotoListObserver().observeForever(Observer<MainResponse>{
             if(it != null) {
-                //update adapter...
+
                 _flickrLiveData.value = it.photos.photo.toTypedArray().toCollection(ArrayList())
-//                bookListAdapter.notifyDataSetChanged()
+
             }
             else {
                 Toast.makeText(context, "Error in fetching photos", Toast.LENGTH_SHORT).show()
             }
         })
         mainRepo.searchFlickrApi(input)
+    }
+
+    fun paginateAPIData(input: String , pageNo: Int, context: Context) {
+
+        mainRepo.paginateObserver().observeForever(Observer<MainResponse>{
+            if(it != null) {
+
+                _paginateLiveData.value = it.photos.photo.toTypedArray().toCollection(ArrayList())
+
+            }
+            else {
+                Toast.makeText(context, "Error in fetching photos", Toast.LENGTH_SHORT).show()
+            }
+        })
+        mainRepo.paginateFlickrApi(input, pageNo.toString())
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
@@ -56,11 +81,8 @@ class MainViewModel(application: Application) : ViewModel() {
     }
 
     override fun onCleared() {
-        mainRepo.getBookListObserver().removeObserver(Observer {  })
+        mainRepo.getPhotoListObserver().removeObserver(Observer {  })
         super.onCleared()
     }
 }
 
-// must observe repo data and once posted must update live data that is
-// being observed by recyclerview adapter
-// once adapter is updated notify data set changed

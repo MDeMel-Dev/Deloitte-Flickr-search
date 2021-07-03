@@ -1,23 +1,16 @@
 package com.example.deloitte_flickr_search.data
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.deloitte_flickr_search.networking.FlickrApi
 import com.example.deloitte_flickr_search.networking.MainResponse
 import com.example.deloitte_flickr_search.networking.util.Constants.Companion.BASE_URL
-import com.google.gson.GsonBuilder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 class PhotoRepository {
@@ -83,13 +76,13 @@ class PhotoRepository {
 //        return responseLiveData
 //    }
 
-    lateinit var bookList: MutableLiveData<MainResponse>
+    lateinit var photoData: MutableLiveData<MainResponse>
     init {
-        bookList = MutableLiveData()
+        photoData = MutableLiveData()
     }
 
-    fun getBookListObserver(): MutableLiveData<MainResponse> {
-        return bookList
+    fun getPhotoListObserver(): MutableLiveData<MainResponse> {
+        return photoData
     }
 
     // make api call
@@ -108,11 +101,48 @@ class PhotoRepository {
             }
 
             override fun onError(e: Throwable) {
-                bookList.postValue(null)
+                photoData.postValue(null)
             }
 
             override fun onNext(t: MainResponse) {
-                bookList.postValue(t)
+                photoData.postValue(t)
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                //start showing progress indicator.
+            }
+        }
+    }
+
+    lateinit var paginateData: MutableLiveData<MainResponse>
+    init {
+        paginateData = MutableLiveData()
+    }
+
+    fun paginateObserver(): MutableLiveData<MainResponse> {
+        return paginateData
+    }
+
+    fun paginateFlickrApi(query: String , page: String) {
+
+        flickrApi.getPage(query, page)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(paginateObserverRx())
+    }
+
+    private fun paginateObserverRx():Observer<MainResponse> {
+        return object : Observer<MainResponse> {
+            override fun onComplete() {
+                //hide progress indicator .
+            }
+
+            override fun onError(e: Throwable) {
+                paginateData.postValue(null)
+            }
+
+            override fun onNext(t: MainResponse) {
+                paginateData.postValue(t)
             }
 
             override fun onSubscribe(d: Disposable) {
