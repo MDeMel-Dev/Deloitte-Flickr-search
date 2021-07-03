@@ -5,11 +5,11 @@ UTU Weather App
 
 ![](https://img.shields.io/badge/Code-Kotlin%2FJava-brightgreen)
 
-> A weather app with intuitive design
+> A image searching app with intuitive design
 
 ![screenshot](./utuwapgif.gif)
 
-Location based weather details + Weather details for { Sydney , Hobart , Perth }
+mobile app that uses the Flickr image search API and shows the results in a 3-column scrollable view.
 
 ## Built With
 
@@ -17,14 +17,31 @@ Location based weather details + Weather details for { Sydney , Hobart , Perth }
 - Kotlin 
 - Flickr Rest-Api
 
-## Features
+## Added Dependancies
 
-Location Based weather from user's lattitude and longitude
-Swipe left or right to Change Weather details -> city
-15 Day Weather Forecast when clicked on item in list ( 7 Day Weather data from 'openweathermap' Api + Mock Data )
+```kotlin
+ //NETWORK DEPENDANCIES
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+    implementation "com.google.code.gson:gson:$version_gson"
+    implementation "com.squareup.retrofit2:converter-gson:$version_gson_converter"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+
+    //IMAGE VIEW RENDERING DEPENDANCIES
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.18"
+
+    //RX JAVA DEPENDANCIES
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
+
+    //DI DEPENDANCIES
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+```
 
 
-## Main Components and Libraries
+## Architecture Pattern and Components overview
 
 **MainActivity.kt** -> **CityFragment.kt** ( implements call back to mainactivity for onSwipe function ) -> next city fragment<br/><br/>
 3 similar Fragments -> {SydneyFragment , HobartFragment , PerthFragment}<br/><br/>
@@ -50,14 +67,14 @@ OncreateView of CityFragment uses factorymethod to create ViewModel passing lat 
 
 👤 **Manendra De Mel**
 
-- GitHub: [@Mane](https://github.com/ManendraDeMel)
-- LinkedIn: [Manendra Melbourne,Victoria](https://www.linkedin.com/in/manendra-de-mel)
+- GitHub:[@Mane](https://github.com/MDeMel-Dev)
+- LinkedIn:[Manendra Melbourne,Victoria](https://www.linkedin.com/in/manendra-de-mel)
 - Website:[Personal Website](https://mnc22.com)
 
 ## ⭐️ Acknowledgments
 
 - Retrofit by Square
-- jsonschema2pojo
+- droidsonroids.gif.drawable
 
 ## 📝 License
 
