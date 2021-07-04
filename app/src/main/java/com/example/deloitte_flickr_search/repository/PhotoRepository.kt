@@ -17,8 +17,10 @@ import javax.inject.Inject
 
 class PhotoRepository(flickrApi: FlickrApi) {
 
+    //MAIN NETWORK SERVICE OBJECT
     val flickrApi = flickrApi
-    //ONSTART OR ON SEARCH
+
+    //DATA RETAIN ONSTART OR ON SEARCH
     lateinit var photoData: MutableLiveData<MainResponse>
     init {
         photoData = MutableLiveData()
@@ -28,7 +30,7 @@ class PhotoRepository(flickrApi: FlickrApi) {
         return photoData
     }
 
-    //ON PAGINATION
+    //DATA RETAIN ON PAGINATION
     lateinit var paginateData: MutableLiveData<MainResponse>
     init {
         paginateData = MutableLiveData()

@@ -53,6 +53,7 @@ class MainFragment : Fragment() {
 
 
         nestedScrollView = binding.recyclerNest
+
         // RecyclerView setup
         flickrRecyclerView = binding.recycler
         flickrRecyclerView.layoutManager = GridLayoutManager(context, 3)
@@ -128,7 +129,7 @@ class MainFragment : Fragment() {
             }) }
     }
 
-    //ACTION BAR HOME ITEM ONCLICK
+    //ACTION BAR android head ITEM ONCLICK
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_info -> {
