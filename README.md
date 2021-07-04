@@ -50,7 +50,7 @@ kapt("com.google.dagger:hilt-android-compiler:2.35")
 
 ## Architecture Pattern and Components overview
 
-![screenshot](./pics/appcomponents.png) 
+![screenshot](./pics/dfs_struct.png) 
 
 ## Dependancy Injection
 
