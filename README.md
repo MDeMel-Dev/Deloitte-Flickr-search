@@ -1,5 +1,11 @@
-#  Deloitte-Flicker-search 
-![screenshot](./pics/dfs_round.png)  
+
+<h1 align="center">
+  Deloitte-Flicker-search 
+</h1>
+
+<p align="center">
+  <img src="./pics/dfs_round.png" />
+</p>
 
 Skill Showcase App
 
@@ -7,7 +13,9 @@ Skill Showcase App
 
 > An image searching app with intuitive design. Uses the Flickr image search API and shows the results in a 3-column scrollable view.
 
-![screenshot](./pics/dfs.gif)
+<p align="center">
+  <img src="./pics/dfs.gif" />
+</p>
 
 
 ## Built With
