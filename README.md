@@ -82,8 +82,6 @@ fun doPaging()
 ```
 It's a simple implementation and one that provides the necessary functionality versus the complexity of caching and using the local database along with a pagination library like google's 'Paging3'.
 
-This does however hinder recyclerview performance after a few pagination cycles due to the quantity of data.
-
 ## Accessibility Features
 
 Fundamental accessibility practices followed
