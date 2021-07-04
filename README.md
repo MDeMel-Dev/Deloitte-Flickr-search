@@ -1,15 +1,14 @@
 #  Deloitte-Flicker-search 
-![screenshot](./app/src/main/res/drawable/dfs_icon.xml)  
+![screenshot](./pics/dfs_round.png)  
 
 Skill Showcase App
 
 ![](https://img.shields.io/badge/Code-Kotlin%2FJava-brightgreen)
 
-> A image searching app with intuitive design
+> An image searching app with intuitive design. Uses the Flickr image search API and shows the results in a 3-column scrollable view.
 
-![screenshot](./utuwapgif.gif)
+![screenshot](./pics/dfs.gif)
 
-mobile app that uses the Flickr image search API and shows the results in a 3-column scrollable view.
 
 ## Built With
 
@@ -21,38 +20,83 @@ mobile app that uses the Flickr image search API and shows the results in a 3-co
 
 ```kotlin
  //NETWORK DEPENDANCIES
-    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
-    implementation "com.google.code.gson:gson:$version_gson"
-    implementation "com.squareup.retrofit2:converter-gson:$version_gson_converter"
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+implementation "com.squareup.retrofit2:retrofit:2.5.0"
+implementation "com.google.code.gson:gson:2.8.5"
+implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
-    //IMAGE VIEW RENDERING DEPENDANCIES
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.18"
+//IMAGE VIEW RENDERING DEPENDANCIES
+implementation 'com.github.bumptech.glide:glide:4.11.0'
+implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.18"
 
-    //RX JAVA DEPENDANCIES
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
+//RX JAVA DEPENDANCIES
+implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
 
-    //DI DEPENDANCIES
-    implementation("com.google.dagger:hilt-android:$hilt_version")
-    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+//DI DEPENDANCIES
+implementation("com.google.dagger:hilt-android:2.35")
+kapt("com.google.dagger:hilt-android-compiler:2.35")
 ```
 
 
 ## Architecture Pattern and Components overview
 
-**MainActivity.kt** -> **CityFragment.kt** ( implements call back to mainactivity for onSwipe function ) -> next city fragment<br/><br/>
-3 similar Fragments -> {SydneyFragment , HobartFragment , PerthFragment}<br/><br/>
-**City.kt** (Main Networking class) using retrofit by sqaure - the only 3rd part library used in the whole project<br/><br/>
-**WapViewModel.kt** ( Main ViewModelClass context being mainactivity ) - invoked on onCreateView of Fragments<br/><br/>
-OncreateView of CityFragment uses factorymethod to create ViewModel passing lat , lon of current user - **LatLon.java** (GeoLocation class coded)<br/><br/>
-**WapViewModel.kt** is initialised with Data for the cities calling city.getWeather(Lat,Lon) -> WapViewModel creates listof(DailyWeather objects) utilizing Api Data<br/><br/>
-**jk.kt** is a pojo class ( Json to Kotlin object ) -> **JKList.kt** is called on retrofit http response callback and stores 7 day weather data in 'jk' objects<br/><br/>
-**Utility.kt** is used for simple time and date convertions<br/><br/>
-**SwipeChecker.kt** is a listener class for swipe gestures
+![screenshot](./pics/appcomponents.png) 
 
+## Dependancy Injection
+
+DI was done using the 'Dagger-Hilt' library. The dependancies are declared under the ['com.example.deloitte_flickr_search.dependancies'](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/tree/master/app/src/main/java/com/example/deloitte_flickr_search/dependancies)  package as Hilt Modules.
+
+- A repository instance is provided (injected into) the [ViewModel ](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/main/java/com/example/deloitte_flickr_search/MainViewModel.kt)through constructor injection.
+- Similarly the 'Network Service' Objects are injected into the [Repository.](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/tree/master/app/src/main/java/com/example/deloitte_flickr_search/repository)
+
+the above implementation facilitates a single source of truth for networking functions for future iterations of this app.
+
+## Pagination
+
+Pagination is achieved by making an API call everytime the user reaches the end of a 'page's items'. 
+This is achieved utilizing  [nested scroll view](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/main/java/com/example/deloitte_flickr_search/ui/home/MainFragment.kt) and comparing it against the recyclerview height.
+
+```kotlin
+fun doPaging()
+    {
+        nestedScrollView!!.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
+                Toast.makeText(this.context,"loading images",Toast.LENGTH_SHORT).show()
+                //INITIATE THE PAGINATION API CALL
+                mainViewModel.paginateAPIData(mainViewModel.currentText , mainViewModel.nextPage , requireActivity()!!.application)
+                //INCREMENT THE CURRENT PAGE COUNTER BY 1
+                mainViewModel.nextPage +=1
+            }
+        })
+    }
+```
+It's a simple implementation and one that provides the necessary functionality versus the complexity of caching and using the local database along with a pagination library like google's 'Paging3'.
+
+## Accessibility Features
+
+Fundamental accessibility practices followed
+
+- Item color contrast threshold for better visibility
+- added content description for all views
+
+## Security Enhancements
+
+Although not implemented for the sake of transparent code in the case of inspection, using 'obfuscation' will greatly enhance the security by the means of a tool like 'ProGuard'.
+
+## Testing
+
+2 tests implemented 
+- [1 local unit test](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/test/java/com/example/deloitte_flickr_search/networking/MainResponseTest.kt)
+
+
+Test for the correctness of the deserialization data class 'MainResponse' on API call using a ['mock' retrofit ](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/test/java/com/example/deloitte_flickr_search/networking/MockRetrofit.kt) instance that is being passed a local json file - ['mockflickrdata.json'](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/test/java/com/example/deloitte_flickr_search/networking/mockflickrdata.json)
+
+- [1 instrumented unit test](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/androidTest/java/com/example/deloitte_flickr_search/ui/home/MainFragmentTest.kt)
+
+
+Test for the correct navigation of Fragments using 'Espresso' components and the 'TestNavHostController'.
 
 ## Setup
 

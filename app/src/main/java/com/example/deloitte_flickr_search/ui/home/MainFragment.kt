@@ -90,7 +90,9 @@ class MainFragment : Fragment() {
         nestedScrollView!!.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
                 Toast.makeText(this.context,"loading images",Toast.LENGTH_SHORT).show()
+                //INITIATE THE PAGINATION API CALL
                 mainViewModel.paginateAPIData(mainViewModel.currentText , mainViewModel.nextPage , requireActivity()!!.application)
+                //INCREMENT THE CURRENT PAGE COUNTER BY 1
                 mainViewModel.nextPage +=1
             }
         })

@@ -8,4 +8,9 @@
     <string name="developer">Manendra De Mel</string>
     <string name="profile_link"><a href="https://mnc22.com/info">Profile-Link</a></string>
     <string name="home">Home</string>
+    <string name="search_view_description">search with a relevant text tag</string>
+    <string name="navigation_info_description">navigate to information screen</string>
+    <string name="image_thumbnail_description">Image Thumbnail</string>
+    <string name="navigate_back_to_home_description">navigate back to Home</string>
+    <string name="profile_link_description">links to the developer\'s website</string>
 </resources>

@@ -4,6 +4,7 @@
 
     <item android:id="@+id/action_home"
         android:title="@string/home"
+        android:contentDescription="@string/navigate_back_to_home_description"
         android:icon="@drawable/ic_baseline_home_24"
         app:showAsAction="ifRoom" />
 
