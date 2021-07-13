@@ -9,14 +9,14 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deloitte_flickr_search.MainViewModel
 import com.example.deloitte_flickr_search.R
-import com.example.deloitte_flickr_search.models.PhotoItem
 import com.example.deloitte_flickr_search.databinding.FragmentHomeBinding
+import com.example.deloitte_flickr_search.models.PhotoItem
+import com.example.deloitte_flickr_search.repository.PhotoRepository
 import com.example.deloitte_flickr_search.ui.home.recyclerview.FlickrAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,9 +51,6 @@ class MainFragment : Fragment() {
         val root: View = binding.root
 
 
-
-        nestedScrollView = binding.recyclerNest
-
         // RecyclerView setup
         flickrRecyclerView = binding.recycler
         flickrRecyclerView.layoutManager = GridLayoutManager(context, 3)
@@ -61,18 +58,17 @@ class MainFragment : Fragment() {
 
         //RECYCLERVIEW ADAPTER DATA PASS ON START OR ON SEARCH
         mainViewModel.flickrLiveData.observe(viewLifecycleOwner, Observer {
-           if(!(it == null)) {
-               adapter.photoList = it as ArrayList<PhotoItem>
-               adapter.notifyDataSetChanged()
-           }
+            if(it != null)
+            {
+                checkStartState(it)
+            }
         })
 
         //RECYCLERVIEW ADAPTER DATA PASS ON PAGINATION
         mainViewModel.paginateLiveData.observe(viewLifecycleOwner, Observer {
-            if(!(it == null)) {
-                adapter.photoList.addAll(it as ArrayList<PhotoItem>)
-//                adapter.notifyItemRangeInserted((mainViewModel.nextPage-1)*100 , 100)
-                adapter.notifyDataSetChanged()
+            if(it != null)
+            {
+                checkPaginationState(it)
             }
         })
 
@@ -84,17 +80,46 @@ class MainFragment : Fragment() {
         return root
     }
 
+    fun checkStartState(result: PhotoRepository.ViewState){
+        when(result)
+        {
+            is PhotoRepository.ViewState.stateLoaded -> {
+                adapter.photoList = result.list as ArrayList<PhotoItem>
+                adapter.notifyDataSetChanged()
+            }
+            is PhotoRepository.ViewState.stateError -> {
+                Toast.makeText(context, "Error in fetching photos: ${result.e}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+
+    fun checkPaginationState(result: PhotoRepository.ViewState){
+        when(result)
+        {
+            is PhotoRepository.ViewState.stateLoaded -> {
+                adapter.photoList.addAll(result.list)
+                adapter.notifyDataSetChanged()
+            }
+            is PhotoRepository.ViewState.stateError -> {
+                Toast.makeText(context, "Error in fetching photos: ${result.e}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     fun doPaging()
     {
-        nestedScrollView!!.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                Toast.makeText(this.context,"loading images",Toast.LENGTH_SHORT).show()
-                //INITIATE THE PAGINATION API CALL
-                mainViewModel.paginateAPIData(mainViewModel.currentText , mainViewModel.nextPage , requireActivity()!!.application)
-                //INCREMENT THE CURRENT PAGE COUNTER BY 1
-                mainViewModel.nextPage +=1
+        flickrRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (!recyclerView.canScrollVertically(1) && dy > 0) {
+                    Toast.makeText(context,"loading images",Toast.LENGTH_SHORT).show()
+                    //INITIATE THE PAGINATION API CALL
+                    mainViewModel.paginateAPIData(mainViewModel.currentText , mainViewModel.nextPage )
+                    //INCREMENT THE CURRENT PAGE COUNTER BY 1
+                    mainViewModel.nextPage +=1
+                } else if (!recyclerView.canScrollVertically(-1) && dy < 0) {
+                    //scrolled to TOP
+                }
             }
         })
     }
@@ -119,7 +144,7 @@ class MainFragment : Fragment() {
                 Log.d("mane", "QueryTextSubmit: $queryText")
                 mainViewModel.currentText = queryText
                 mainViewModel.nextPage = 2
-                mainViewModel.loadAPIData(queryText , requireActivity()!!.application)
+                mainViewModel.loadAPIData(queryText)
                 return true
             }
                 override fun onQueryTextChange(queryText: String): Boolean {

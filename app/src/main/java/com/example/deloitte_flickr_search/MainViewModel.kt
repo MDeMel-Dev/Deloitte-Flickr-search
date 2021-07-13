@@ -13,19 +13,19 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor( @ApplicationContext private val application: Context , private val mainRepo: PhotoRepository) : ViewModel() {
+class MainViewModel @Inject constructor( private val mainRepo: PhotoRepository) : ViewModel() {
 
     //START LOAD DATA VALUES
-    private val _flickrLiveData = MutableLiveData<List<PhotoItem>>().apply {
+    private val _flickrLiveData = MutableLiveData<PhotoRepository.ViewState>().apply {
         value = null
     }
-    val flickrLiveData: LiveData<List<PhotoItem>> = _flickrLiveData
+    val flickrLiveData: LiveData<PhotoRepository.ViewState> = _flickrLiveData
 
     //PAGINATION VALUES
-    private val _paginateLiveData = MutableLiveData<List<PhotoItem>>().apply {
+    private val _paginateLiveData = MutableLiveData<PhotoRepository.ViewState>().apply {
         value = null
     }
-    val paginateLiveData: LiveData<List<PhotoItem>> = _paginateLiveData
+    val paginateLiveData: LiveData<PhotoRepository.ViewState> = _paginateLiveData
 
     var nextPage = 2
 
@@ -34,38 +34,30 @@ class MainViewModel @Inject constructor( @ApplicationContext private val applica
 
     init {
 
-            loadAPIData("trees" , application )
+            loadAPIData("trees" )
 
     }
 
     // API CALL START FOR SEARCH AND ON START
-    fun loadAPIData(input: String , context: Context) {
+    fun loadAPIData(input: String ) {
 
-        mainRepo.getPhotoListObserver().observeForever(Observer<MainResponse>{
-            if(it != null) {
+        mainRepo.getPhotoListObserver().observeForever(Observer<PhotoRepository.ViewState>{
 
-                _flickrLiveData.value = it.photos.photo.toTypedArray().toCollection(ArrayList())
+                _flickrLiveData.value = it
 
-            }
-            else {
-                Toast.makeText(context, "Error in fetching photos", Toast.LENGTH_SHORT).show()
-            }
         })
         mainRepo.searchFlickrApi(input)
     }
 
     //API CALL START FOR PAGINATION
-    fun paginateAPIData(input: String , pageNo: Int, context: Context) {
+    fun paginateAPIData(input: String , pageNo: Int) {
 
-        mainRepo.paginateObserver().observeForever(Observer<MainResponse>{
-            if(it != null) {
+        mainRepo.paginateObserver().observeForever(Observer<PhotoRepository.ViewState>{
 
-                _paginateLiveData.value = it.photos.photo.toTypedArray().toCollection(ArrayList())
 
-            }
-            else {
-                Toast.makeText(context, "Error in fetching photos", Toast.LENGTH_SHORT).show()
-            }
+                _paginateLiveData.value = it
+//                it.photos.photo.toTypedArray().toCollection(ArrayList())
+
         })
         mainRepo.paginateFlickrApi(input, pageNo.toString())
     }
@@ -74,6 +66,7 @@ class MainViewModel @Inject constructor( @ApplicationContext private val applica
     //REMOVES RXJAVA OBSERVER
     override fun onCleared() {
         mainRepo.getPhotoListObserver().removeObserver(Observer {  })
+        mainRepo.paginateObserver().removeObserver(Observer {  })
         super.onCleared()
     }
 }

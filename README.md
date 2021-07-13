@@ -64,25 +64,25 @@ the above implementation facilitates a single source of truth for networking fun
 ## Pagination
 
 Pagination is achieved by making an API call everytime the user reaches the end of a 'page's items'. 
-This is achieved utilizing  [nested scroll view](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/main/java/com/example/deloitte_flickr_search/ui/home/MainFragment.kt) and comparing it against the recyclerview height.
+This is achieved by adding an onscroll listener to the [recycler view](https://github.com/MDeMel-Dev/Deloitte-Flickr-search/blob/master/app/src/main/java/com/example/deloitte_flickr_search/ui/home/MainFragment.kt)
 
 ```kotlin
 fun doPaging()
-    {
-        nestedScrollView!!.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                Toast.makeText(this.context,"loading images",Toast.LENGTH_SHORT).show()
-                //INITIATE THE PAGINATION API CALL
-                mainViewModel.paginateAPIData(mainViewModel.currentText , mainViewModel.nextPage , requireActivity()!!.application)
-                //INCREMENT THE CURRENT PAGE COUNTER BY 1
-                mainViewModel.nextPage +=1
+   flickrRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (!recyclerView.canScrollVertically(1) && dy > 0) {
+                    Toast.makeText(context,"loading images",Toast.LENGTH_SHORT).show()
+                    //INITIATE THE PAGINATION API CALL
+                    mainViewModel.paginateAPIData(mainViewModel.currentText , mainViewModel.nextPage )
+                    //INCREMENT THE CURRENT PAGE COUNTER BY 1
+                    mainViewModel.nextPage +=1
+                } else if (!recyclerView.canScrollVertically(-1) && dy < 0) {
+                    //scrolled to TOP
+                }
             }
-        })
-    }
+        }
 ```
 It's a simple implementation and one that provides the necessary functionality versus the complexity of caching and using the local database along with a pagination library like google's 'Paging3'.
-
-This does however hinder recyclerview performance after a few pagination cycles due to the quantity of data.
 
 ## Accessibility Features
 

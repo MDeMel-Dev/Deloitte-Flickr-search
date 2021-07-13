@@ -1,6 +1,7 @@
 package com.example.deloitte_flickr_search.repository
 
 import androidx.lifecycle.MutableLiveData
+import com.example.deloitte_flickr_search.models.PhotoItem
 import com.example.deloitte_flickr_search.networking.FlickrApi
 import com.example.deloitte_flickr_search.networking.MainResponse
 import com.example.deloitte_flickr_search.networking.util.Constants.Companion.BASE_URL
@@ -20,23 +21,30 @@ class PhotoRepository(flickrApi: FlickrApi) {
     //MAIN NETWORK SERVICE OBJECT
     val flickrApi = flickrApi
 
+    sealed class ViewState {
+        data class stateLoaded(val list : List<PhotoItem>) : ViewState()
+        data class stateLoading(val string : String = "loading") : ViewState()
+        data class stateError(val e : Exception) : ViewState()
+    }
+
+
     //DATA RETAIN ONSTART OR ON SEARCH
-    lateinit var photoData: MutableLiveData<MainResponse>
+    lateinit var photoData: MutableLiveData<ViewState>
     init {
         photoData = MutableLiveData()
     }
 
-    fun getPhotoListObserver(): MutableLiveData<MainResponse> {
+    fun getPhotoListObserver(): MutableLiveData<ViewState> {
         return photoData
     }
 
     //DATA RETAIN ON PAGINATION
-    lateinit var paginateData: MutableLiveData<MainResponse>
+    lateinit var paginateData: MutableLiveData<ViewState>
     init {
         paginateData = MutableLiveData()
     }
 
-    fun paginateObserver(): MutableLiveData<MainResponse> {
+    fun paginateObserver(): MutableLiveData<ViewState> {
         return paginateData
     }
 
@@ -59,11 +67,11 @@ class PhotoRepository(flickrApi: FlickrApi) {
             }
 
             override fun onError(e: Throwable) {
-                photoData.postValue(null)
+                photoData.postValue(ViewState.stateError(e as Exception))
             }
 
             override fun onNext(t: MainResponse) {
-                photoData.postValue(t)
+                photoData.postValue(ViewState.stateLoaded(t.photos.photo))
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -89,11 +97,11 @@ class PhotoRepository(flickrApi: FlickrApi) {
             }
 
             override fun onError(e: Throwable) {
-                paginateData.postValue(null)
+                paginateData.postValue(ViewState.stateError(e as Exception))
             }
 
             override fun onNext(t: MainResponse) {
-                paginateData.postValue(t)
+                paginateData.postValue(ViewState.stateLoaded(t.photos.photo))
             }
 
             override fun onSubscribe(d: Disposable) {
